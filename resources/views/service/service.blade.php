@@ -35,13 +35,20 @@
                             <div class="modal-left">
 
                                     <!-- 服务表格 --> 
-                                    <div class="input-group input-customized">
+<!--                                     <div class="input-group input-customized">
                                         <label>提供商</label>
                                         <input ng-model="merchantInfo.MRCHNT_NM"></input> 
                                         <p class="btn btn-customized" ng-click="queryInfo(serviceInfo.MRCHNT_NM)">
                                             <label>查询</label>  
                                         </p>                                                                    
-                                    </div>                                    
+                                    </div>  -->
+                                    <div class="input-group input-customized">
+                                        <label>提供商</label>
+                                        <input type="text" ng-model="merchantInfo.MRCHNT_NM" ng-blur="queryInfo()" />
+                                        <p>
+                                        <span style="color:blue;" ng-show="merchantAlreadyExist">商户已存在</span>
+                                        </p>
+                                    </div>                                                                        
                                     <div class="input-group input-customized">
                                         <label>服务名称</label>
                                         <input ng-model="serviceInfo.CMB_NM"></input>
@@ -74,9 +81,11 @@
                                         <select ng-model="serviceInfo.CMB_MTHD"
                                         ng-options="service.option as service.option for service in servicecategories">                                         
                                         </select>    
-                                    </div>
-                                    
-                                                             
+                                    </div> 
+                                    <div ng-repeat= "tag in allTags">                                
+                                    <td> <input type="checkbox" id={{tag.TAG_ID}} ng-checked="isSelected(tag.TAG_ID)" ng-click="updateSelection($event,tag.TAG_ID)"/>{{tag.TAG_NM}} 
+                                    </td>  
+                                    </div>                                                           
                             </div>
                         </form> 
                          <div>
@@ -97,7 +106,7 @@
                                                                        
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-customized" ng-click="submit(serviceInfo,merchantInfo)">添加</button>                             
+                      <button type="button" class="btn btn-customized" ng-click="submit(serviceInfo,merchantInfo,selected)">添加</button>                             
                       <button type="button" class="btn btn-customized" data-dismiss="modal">关闭</button>
                     </div>
                   </div>
@@ -118,6 +127,7 @@
                     <td>类型</td>
                     <td>服务地区</td>
                     <td>服务方式</td>
+                    <td>标签</td>
                     <td>加入时间</td>
                     <td>单价</td>
                     <td>未结款项</td>
@@ -135,6 +145,7 @@
                     <td>{{service.MRCHNT_TP}}</td>
                     <td>{{service.MRCHNT_CVR}}</td>
                     <td>{{service.CMB_MTHD}}</td>
+                    <td>{{service.CMB_TAGS}}</td>
                     <td>{{service.CMB_INPT_TSTMP}}</td>
                     <td>{{service.CMB_PRC}}</td>
                     <td>{{service.CMB_OTSTND_AMNTS}}</td> 

@@ -51,6 +51,10 @@
                                         ng-options="service.option as service.option for service in servicecategories">                                                                              
                                 </select>   
                             </div> 
+                            <div ng-repeat= "tag in allTags">                                
+                            <td> <input type="checkbox" id={{tag.TAG_ID}} ng-checked="isSelected(tag.TAG_ID)" ng-click="updateSelection($event,tag.TAG_ID)"/>{{tag.TAG_NM}} 
+                            </td>  
+                            </div>                               
                     </form>
                     </div>         
                      <div>
@@ -73,7 +77,7 @@
 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-customized" ng-click="update(serviceID,serviceInfoDated)">更新</button>                                          
+          <button type="button" class="btn btn-customized" ng-click="update(serviceID,serviceInfoDated,selected)">更新</button>                                          
         </div>
       </div>
       

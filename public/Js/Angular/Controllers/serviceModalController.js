@@ -19,6 +19,7 @@ app.controller('serviceModalController', function($scope, $http, $modalInstance,
 	 
 	    $scope.cancel = function () {
 	        $modalInstance.dismiss('cancel');
+			parent.location.reload();	        
 	    };	 
 
 	     var updateSelected = function(action,id){
@@ -70,19 +71,27 @@ app.controller('serviceModalController', function($scope, $http, $modalInstance,
 				$scope.allhotels=data;
 			});
 		}
+
+		var getAllTags = function (){
+			serviceFactory.getAllTags().success(function(data){
+				$scope.allTags=data;
+			});
+		}
 	    /********************************************     common initial setting     *****************************************/
 	    $scope.serviceInfoDated=null;
 	    getServiceInfo(serviceID);
 	    getServiceTypes();
 		getAllHotel();	    
 	    getHotelRelation(serviceID);
+	    getAllTags();
 
 	    setInterval(
 	        function(){
 			    getServiceInfo(serviceID);
 			    getServiceTypes();
 			    getAllHotel();
-			    getHotelRelation(serviceID);             
+			    getHotelRelation(serviceID);    
+			    getAllTags();         
 	        }
 	        ,600000
 	    );

@@ -21,11 +21,35 @@ app.controller('serviceCTRL', function($scope,serviceFactory) {
             {id:2,option:"快递取件"}
      ];    
 
+
+
     $scope.iconAndAction = {"serviceIconAction":util.serviceIconAction};
     
     $scope.openModal = function(){
         $("#serviceModal").modal({backdrop: true});
     }
+
+     $scope.selected = [];
+
+     var updateSelected = function(action,id){
+         if(action == 'add' && $scope.selected.indexOf(id) == -1){
+             $scope.selected.push(id);
+         }
+         if(action == 'remove' && $scope.selected.indexOf(id)!=-1){
+             var idx = $scope.selected.indexOf(id);
+             $scope.selected.splice(idx,1);
+         }
+     }
+ 
+     $scope.updateSelection = function($event, id){
+         var checkbox = $event.target;
+         var action = (checkbox.checked?'add':'remove');
+         updateSelected(action,id);
+     }
+ 
+    $scope.isSelected = function(id){
+        return $scope.selected.indexOf(id)>=0;
+     }  
 
     /********************************************      initial function     *****************************************/
 
@@ -41,23 +65,32 @@ app.controller('serviceCTRL', function($scope,serviceFactory) {
         });
     };
 
+    var getAllTags = function (){
+        serviceFactory.getAllTags().success(function(data){
+            $scope.allTags=data;
+        });
+    }
     /********************************************     common initial setting     *****************************************/
     $scope.serviceInfo=null;
     getService();
     getServiceTypes();
+    getAllTags();
+
     setInterval(
         function(){
             getService();
-            getServiceTypes();            
+            getServiceTypes(); 
+            getAllTags();           
         }
         ,600000
     );
 
     /************** ********************************** submit  ********************************** *************/
-    $scope.submit = function(serviceInfo,merchantInfo){
+    $scope.submit = function(serviceInfo,merchantInfo,selected){
 
 
         var now = dateUtil.tstmpFormat(new Date());
+        str = selected.toString();
 
         var combo = {
             CMB_NM:serviceInfo.CMB_NM,
@@ -66,7 +99,8 @@ app.controller('serviceCTRL', function($scope,serviceFactory) {
             CMB_RMRK:serviceInfo.CMB_RMRK,           
             CMB_STATUS:'开通',
             CMB_INPT_TSTMP:now,  
-            CMB_PIC:fileName        
+            CMB_PIC:fileName,
+            CMB_TAGS:str        
         } 
 
         var merchant={
@@ -75,26 +109,64 @@ app.controller('serviceCTRL', function($scope,serviceFactory) {
             MRCHNT_CVR:merchantInfo.MRCHNT_CVR,
             MRCHNT_TP:merchantInfo.MRCHNT_TP            
         }
-        show(fileName);
-        if (fileName!=null)
-        {
+
             serviceFactory.postServiceInfo(combo,merchant).success(function(data){
                 $("#serviceModal").modal('hide');
             });             
-        }
             
     };
 
-     $scope.queryInfo=function(merchantName){
-        serviceFactory.queryMerchant(merchantName).success(function(data){
-            $scope.merchantInfo = data[0];
+     // $scope.queryInfo=function(merchantName){
+     //    serviceFactory.queryMerchant(merchantName).success(function(data){
+     //        $scope.merchantInfo = data[0];
+     //    });
+     // };
+
+     $scope.queryInfo=function(){
+
+        serviceFactory.queryMerchant($scope.merchantInfo.MRCHNT_NM).success(function(data){
+            var tmp = $scope.merchantInfo.MRCHNT_NM;
+
+            if(data[0]==null)
+            {
+                $scope.merchantAlreadyExist = false;
+                if($scope.merchantInfo.MRCHNT_CVR!=null)
+                {
+                    $scope.merchantInfo.MRCHNT_CVR=null;
+                }
+                if($scope.merchantInfo.MRCHNT_TP!=null)
+                {
+                    $scope.merchantInfo.MRCHNT_TP=null;
+                }
+                if($scope.merchantInfo.MRCHNT_PHN!=null)
+                {
+                    $scope.merchantInfo.MRCHNT_PHN=null;
+                }
+            }
+            else
+            {
+                $scope.merchantAlreadyExist = true;
+                $scope.merchantInfo = data[0];                
+            }
+
         });
+
      };
 
      $scope.uploadPic=function(uploadPic){
         show('guess');
      };    
 
+
+    $scope.checkUsername = function() {
+        if ($scope.username === 'hellobug') {
+            $scope.usernameAlreadyExist = true;
+            }
+        else
+        {
+            $scope.usernameAlreadyExist = false;
+        }
+    }
 
 
     $(document).ready(function() {

@@ -79,4 +79,6 @@ Route::get('getHotelRelation/{CMB_ID}','ServiceController@getHotelRelation');
 Route::post('postServiceNewRelation','ServiceController@postServiceNewRelation');
 Route::get('deleteService/{CMB_ID}','ServiceController@deleteService');
 Route::get('getAllHotel','ServiceController@getAllHotel');
+Route::get('getAllTags','ServiceController@getAllTags');
+Route::get('getTags/{CMB_ID}','ServiceController@getTags');
 //Route::get('history','OrderHistoryController');

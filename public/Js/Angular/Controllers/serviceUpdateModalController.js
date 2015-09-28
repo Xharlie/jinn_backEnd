@@ -21,6 +21,7 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 	 
 	    $scope.cancel = function () {
 	        $modalInstance.dismiss('cancel');
+	        parent.location.reload();
 	    };	 
 
 	     var updateSelected = function(action,id){
@@ -72,26 +73,52 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 				$scope.allhotels=data;
 			});
 		}
+
+		var getAllTags = function (){
+			serviceFactory.getAllTags().success(function(data){
+
+				$scope.allTags=data;
+			});
+		}	
+
+		var getTags = function(serviceID){
+			serviceFactory.getTags(serviceID).success(function(data){
+				$scope.Tags=data;
+				if(data[0].CMB_TAGS!=null)
+				{
+					str=data[0].CMB_TAGS.split(",");
+					for (i=0;i<str.length;i++)
+					{
+						$scope.selected[i]=parseInt(str[i]);
+					}					
+				}
+
+			});
+		}	
 	    /********************************************     common initial setting     *****************************************/
 	    $scope.serviceInfoDated=null;
 	    getServiceInfo(serviceID);
 	    getServiceTypes();
 		getAllHotel();	    
 	    getHotelRelation(serviceID);
+	    getAllTags();
+	    getTags(serviceID);
 
 	    setInterval(
 	        function(){
 			    getServiceInfo(serviceID);
 			    getServiceTypes();
 			    getAllHotel();
-			    getHotelRelation(serviceID);             
+			    getHotelRelation(serviceID); 
+			    getAllTags();
+			    getTags(serviceID);            
 	        }
 	        ,600000
 	    );
     /************** ********************************** update  ********************************** *************/
-		$scope.update=function(id,serviceInfoDated){
+		$scope.update=function(id,serviceInfoDated,selected){
         	var now = dateUtil.tstmpFormat(new Date());	
-
+        	str = selected.toString();
 
 	        var service = {
 	            CMB_NM:serviceInfoDated.CMB_NM,
@@ -103,7 +130,8 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 	            CMB_PRC:serviceInfoDated.CMB_PRC,  
 	            CMB_RMRK:serviceInfoDated.CMB_RMRK,         
 				CMB_UPDT_TSTMP:now,	                        
-            	CMB_PIC:fileName  				
+            	CMB_PIC:fileName,  
+            	CMB_TAGS:str				
 	        } 
 
 	        serviceFactory.updateServiceInfo(id,service).success(function(data){

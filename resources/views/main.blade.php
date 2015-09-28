@@ -56,7 +56,9 @@
         <script src="Js/Angular/Controllers/menu/smallMenuController.js"></script>  
         <script src="Js/Angular/Controllers/hotelModalController.js"></script>   
         <script src="Js/Angular/Controllers/serviceModalController.js"></script>
-        <script src="Js/Angular/Controllers/serviceUpdateModalController.js"></script>                    
+        <script src="Js/Angular/Controllers/serviceUpdateModalController.js"></script>  
+        <!--JS Blur-->
+        <script src="Js/Angular/directives/blur_event.js"></script>                  
     </body>
 </html>
 

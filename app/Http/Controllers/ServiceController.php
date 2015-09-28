@@ -32,11 +32,13 @@ class ServiceController extends Controller
                                 'Combo_Info.CMB_PRC as CMB_PRC',
                                 'Combo_Info.CMB_TP as CMB_TP',
                                 'Combo_Info.CMB_MTHD as CMB_MTHD',
+                                'Combo_Info.CMB_TAGS as CMB_TAGS',
                                 'Combo_Info.CMB_RMRK as CMB_RMRK',
                                 'Combo_Info.CMB_INPT_TSTMP as CMB_INPT_TSTMP',
                                 'Combo_Info.CMB_OTSTND_AMNTS as CMB_OTSTND_AMNTS',
                                 'Combo_Info.CMB_STATUS as CMB_STATUS') 
                             ->get();
+
         return response()->json($ServiceInfo);
     }
 
@@ -137,7 +139,8 @@ class ServiceController extends Controller
     public function queryMerchant($MRCHNT_NM){
         $Merchant_Info = DB::table('Merchant_Info')
             ->where('Merchant_Info.MRCHNT_NM','=',$MRCHNT_NM)
-            ->select('Merchant_Info.MRCHNT_TP as MRCHNT_TP',
+            ->select('Merchant_Info.MRCHNT_NM as MRCHNT_NM',
+                     'Merchant_Info.MRCHNT_TP as MRCHNT_TP',
                      'Merchant_Info.MRCHNT_PHN as MRCHNT_PHN',
                      'Merchant_Info.MRCHNT_CVR as MRCHNT_CVR')
             ->get();
@@ -208,7 +211,8 @@ class ServiceController extends Controller
                 "CMB_MTHD" => $serviceInfo['CMB_MTHD'], 
                 "CMB_PRC" => $serviceInfo['CMB_PRC'],           
                 "CMB_RMRK" => $serviceInfo['CMB_RMRK'],
-                "CMB_PIC" => $serviceInfo['CMB_PIC']              
+                "CMB_PIC" => $serviceInfo['CMB_PIC'],  
+                "CMB_TAGS" => $serviceInfo['CMB_TAGS']            
             ));        
     }
 
@@ -297,7 +301,24 @@ class ServiceController extends Controller
         } else {
           return response()->json(false, 200);
         }
-      }    
+      }
+
+      public function getAllTags(){
+        $Tags = DB::table('Tags')
+                    ->select('Tags.TAG_ID as TAG_ID',
+                     'Tags.TAG_NM as TAG_NM')
+                    ->get();
+        return response()->json($Tags);
+      }  
+
+    public function getTags($CMB_ID){
+        $Tags=DB::table('Combo_Info')
+            ->where('Combo_Info.CMB_ID','=',$CMB_ID)
+            ->select('Combo_Info.CMB_TAGS as CMB_TAGS')
+            ->get();
+
+        return response()->json($Tags);
+    }         
     /**
      * Show the form for creating a new resource.
      *

@@ -15,6 +15,7 @@ app.controller('hotelModalController', function($scope, $http, $modalInstance, h
 	 
 	    $scope.cancel = function () {
 	        $modalInstance.dismiss('cancel');
+			parent.location.reload();	        
 	    };	 
 
 	     var updateSelected = function(action,id){

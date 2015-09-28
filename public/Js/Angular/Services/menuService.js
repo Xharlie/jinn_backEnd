@@ -273,6 +273,20 @@ app.factory('serviceFactory',function($http){
                 headers:{'content-Type':'application/json'},
                 url:'getAllHotel'
             })
+        }
+        ,getAllTags:function(){
+            return $http({
+                method:'GET',
+                headers:{'content-Type':'application/json'},
+                url:'getAllTags'
+            })
+        }
+        ,getTags: function(CMB_ID) {
+            return $http({
+                method:'GET',
+                headers:{'content-Type':'application/json'},
+                url:'getTags/'+CMB_ID.toString()
+            })
         }                               
     };
 });

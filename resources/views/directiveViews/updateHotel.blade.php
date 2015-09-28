@@ -44,12 +44,12 @@
                             <div class="input-group input-customized">
                                 <label>地址</label>
                                 <input ng-model="hotelInfoDated.HTL_ADDRSS"/>    
-                            </div>                                                                                                 
+                            </div> 
                     </div>  
                 </form> 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-customized" ng-click="update(hotelID,hotelInfoDated)">更新</button>                                          
+          <button type="button" class="btn btn-customized" ng-click="update(hotelID,hotelInfoDated,selected)">更新</button>                                          
         </div>
       </div>
       
