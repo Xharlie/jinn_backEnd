@@ -44,8 +44,32 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 	        return $scope.selected.indexOf(id)>=0;
 	     }	    
 
+
+    /****************************************** selected paymethod ************************************************************/
+     $scope.selectedPayment = [];
+
+     var updateSelectedPayment = function(action,id){
+         if(action == 'add' && $scope.selectedPayment.indexOf(id) == -1){
+             $scope.selectedPayment.push(id);
+         }
+         if(action == 'remove' && $scope.selectedPayment.indexOf(id)!=-1){
+             var idx = $scope.selectedPayment.indexOf(id);
+             $scope.selectedPayment.splice(idx,1);
+         }
+     }
+ 
+     $scope.updateSelectionPayment = function($event, id){
+         var checkbox = $event.target;
+         var action = (checkbox.checked?'add':'remove');
+         updateSelectedPayment(action,id);
+     }
+ 
+    $scope.isSelectedPayment = function(id){
+        return $scope.selectedPayment.indexOf(id)>=0;
+     } 
 	    /********************************************      initial function     *****************************************/
 	    var fileName=null;
+	    var thumbfileName=null;
 		var getServiceInfo=function(serviceID){
 	        serviceFactory.getServiceInfo(serviceID).success(function(data){
 	            $scope.serviceInfoDated = data[0];         
@@ -94,15 +118,39 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 				}
 
 			});
-		}	
+		}
+
+    var getAllPaymentMethods = function(){
+      serviceFactory.getAllPaymentMethods().success(function(data){
+          $scope.allPaymentMethods=data;
+      });
+    }
+
+		var getPaymethods = function(serviceID){
+			serviceFactory.getPaymethods(serviceID).success(function(data){
+				$scope.Paymethods=data;
+				if(data[0].CMB_PAY_MTHD!=null)
+				{
+					paystr=data[0].CMB_PAY_MTHD.split(",");
+					for (i=0;i<str.length;i++)
+					{
+						$scope.selectedPayment[i]=parseInt(paystr[i]);
+					}					
+				}
+
+			});
+		}			
 	    /********************************************     common initial setting     *****************************************/
 	    $scope.serviceInfoDated=null;
+
 	    getServiceInfo(serviceID);
 	    getServiceTypes();
 		getAllHotel();	    
 	    getHotelRelation(serviceID);
 	    getAllTags();
 	    getTags(serviceID);
+	    getPaymethods(serviceID);
+		getAllPaymentMethods();
 
 	    setInterval(
 	        function(){
@@ -111,14 +159,36 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 			    getAllHotel();
 			    getHotelRelation(serviceID); 
 			    getAllTags();
-			    getTags(serviceID);            
+			    getTags(serviceID);   
+	    		getPaymethods(serviceID);	
+				getAllPaymentMethods();	    				             
 	        }
 	        ,600000
 	    );
     /************** ********************************** update  ********************************** *************/
-		$scope.update=function(id,serviceInfoDated,selected){
+    var serviceTypeID=null;
+
+		$scope.update=function(id,serviceInfoDated,selected,selectedPayment){
         	var now = dateUtil.tstmpFormat(new Date());	
         	str = selected.toString();
+        	paystr = selectedPayment.toString();
+
+
+        	if(serviceTypeID==null)
+        	{
+        		serviceTypeID=serviceInfoDated.SRVC_TP_ID;
+        	}
+
+        	if(thumbfileName==null)
+        	{
+        		thumbfileName=serviceInfoDated.CMB_THMBNL;
+        	}
+
+        	if(fileName==null)
+        	{
+        		fileName=serviceInfoDated.CMB_PIC;
+        	}
+
 
 	        var service = {
 	            CMB_NM:serviceInfoDated.CMB_NM,
@@ -131,7 +201,17 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 	            CMB_RMRK:serviceInfoDated.CMB_RMRK,         
 				CMB_UPDT_TSTMP:now,	                        
             	CMB_PIC:fileName,  
-            	CMB_TAGS:str				
+            	CMB_TAGS:str,
+            	CMB_ORGN_PRC:serviceInfoDated.CMB_ORGN_PRC,
+            	CMB_TRANS_PRC:serviceInfoDated.CMB_TRANS_PRC,
+            	CMB_THMBNL:thumbfileName,
+            	SRVC_TP_ID:serviceTypeID,
+            	CMB_PAY_MTHD:paystr,
+            	CMB_DSCRPT:serviceInfoDated.CMB_DSCRPT,
+            	CMB_DTL:serviceInfoDated.CMB_DTL,
+            	CMB_PRVD_MTHD:serviceInfoDated.CMB_PRVD_MTHD,
+            	CMB_LNK:serviceInfoDated.CMB_LNK
+
 	        } 
 
 	        serviceFactory.updateServiceInfo(id,service).success(function(data){
@@ -139,6 +219,12 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 				parent.location.reload();	             
 	        }); 			
 		};  
+
+    $scope.queryServiceID = function(){
+      serviceFactory.queryServiceID($scope.serviceInfoDated.MRCHNT_TP).success(function(data){
+            serviceTypeID=data[0].SRVC_TP_ID;
+      });
+    };
 
 		$scope.change=function(id,selected){
 	        serviceFactory.postNewRelation(id,selected).success(function(data){
@@ -195,12 +281,59 @@ app.controller('serviceUpdateModalController', function($scope, $http, $modalIns
 				  };
 				  var modalDropzone = new Dropzone("#modal-dropzone");
 				  
-				  $('#upload').on('click', function(e) {
+				  $('#modalupload').on('click', function(e) {
 				    e.preventDefault();
 				    //trigger file upload select
 				    $("#modal-dropzone").trigger('click');
 				  });
 		}
+
+		if ($('#modalthumb-dropzone').length) {
+				  //Dropzone.js Options - Upload an image via AJAX.
+				 url: "fileupload",
+
+				  Dropzone.options.modalthumbDropzone = {
+				    uploadMultiple: false,
+				    // previewTemplate: '',
+				    addRemoveLinks: false,
+				    // maxFiles: 1,
+				    acceptedFiles: "image/*",
+
+			        sending: function(file, xhr, formData) {
+			            // Pass token. You can use the same method to pass any other values as well such as a id to associate the image with for example.
+			            formData.append("_token", $('[name=_token]').val()); // Laravel expect the token post value to be named _token by default
+			        },
+
+			        uploadprogress: function(progress, bytesSent) {
+			            console.log(progress);
+			        },
+
+				    dictDefaultMessage: '',
+				    init: function() {
+				      this.on("addedfile", function(file) {
+				        // console.log('addedfile...');
+				      });
+				      this.on("thumbnail", function(file, dataUrl) {
+				        // console.log('thumbnail...');
+				        $('.dz-image-preview').hide();
+				        $('.dz-file-preview').hide();
+				      });
+				      this.on("success", function(file, res) {
+				        console.log('upload success...');
+				        $('#img-thumb').attr('src', res.path);
+				        $('input[name="pic_url"]').val(res.path);
+		            	thumbfileName=file.name;		        
+				      });
+				    }
+				  };
+				  var modalthumbDropzone = new Dropzone("#modalthumb-dropzone");
+				  
+				  $('#modaluploadthumb').on('click', function(e) {
+				    e.preventDefault();
+				    //trigger file upload select
+				    $("#modalthumb-dropzone").trigger('click');
+				  });
+		}		
 	}
 	$modalInstance.opened.then($scope.init);
 

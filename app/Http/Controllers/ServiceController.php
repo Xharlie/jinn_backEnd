@@ -192,7 +192,7 @@ class ServiceController extends Controller
             ->select('Merchant_Combo_Mapping.MRCHNT_ID as MRCHNT_ID')
             ->get();
 
-        var_dump($serviceInfo);
+        // var_dump($serviceInfo);
         DB::setFetchMode(PDO::FETCH_CLASS);      
 
         DB::table('Merchant_Info')
@@ -212,7 +212,16 @@ class ServiceController extends Controller
                 "CMB_PRC" => $serviceInfo['CMB_PRC'],           
                 "CMB_RMRK" => $serviceInfo['CMB_RMRK'],
                 "CMB_PIC" => $serviceInfo['CMB_PIC'],  
-                "CMB_TAGS" => $serviceInfo['CMB_TAGS']            
+                "CMB_TAGS" => $serviceInfo['CMB_TAGS'],
+                "CMB_ORGN_PRC" => $serviceInfo['CMB_ORGN_PRC'],
+                "CMB_TRANS_PRC"=> $serviceInfo['CMB_TRANS_PRC'],
+                "CMB_THMBNL" => $serviceInfo['CMB_THMBNL'],
+                "SRVC_TP_ID" => $serviceInfo['SRVC_TP_ID'],
+                "CMB_PAY_MTHD" => $serviceInfo['CMB_PAY_MTHD'],
+                "CMB_DSCRPT" => $serviceInfo['CMB_DSCRPT'],
+                "CMB_DTL" => $serviceInfo['CMB_DTL'],
+                "CMB_PRVD_MTHD" => $serviceInfo['CMB_PRVD_MTHD'],
+                "CMB_LNK" => $serviceInfo['CMB_LNK']            
             ));        
     }
 
@@ -229,7 +238,18 @@ class ServiceController extends Controller
                                 'Combo_Info.CMB_PRC as CMB_PRC',
                                 'Combo_Info.CMB_TP as CMB_TP',
                                 'Combo_Info.CMB_MTHD as CMB_MTHD',
-                                'Combo_Info.CMB_RMRK as CMB_RMRK') 
+                                'Combo_Info.CMB_RMRK as CMB_RMRK',
+                                'Combo_Info.CMB_ORGN_PRC as CMB_ORGN_PRC',
+                                'Combo_Info.CMB_TRANS_PRC as CMB_TRANS_PRC',
+                                'Combo_Info.CMB_PAY_MTHD as CMB_PAY_MTHD',
+                                'Combo_Info.CMB_DSCRPT as CMB_DSCRPT',
+                                'Combo_Info.CMB_DTL as CMB_DTL',
+                                'Combo_Info.CMB_PRVD_MTHD as CMB_PRVD_MTHD',
+                                'Combo_Info.CMB_LNK as CMB_LNK',
+                                'Combo_Info.CMB_RMRK as CMB_RMRK',
+                                'Combo_Info.CMB_PIC as CMB_PIC',
+                                'Combo_Info.CMB_THMBNL as CMB_THMBNL',
+                                'Combo_Info.SRVC_TP_ID as SRVC_TP_ID') 
                             ->get();
         return response()->json($ServiceInfo);        
     }
@@ -318,7 +338,31 @@ class ServiceController extends Controller
             ->get();
 
         return response()->json($Tags);
-    }         
+    }   
+
+    public function getAllPaymentMethods(){
+        $Methods=DB::table('PayMethod')
+                ->select('PayMethod.PAY_MTHD_ID as PAY_MTHD_ID',
+                    'PayMethod.PAY_MTHD_NM as PAY_MTHD_NM')
+                ->get();
+        return response()->json($Methods);
+    }
+
+    public function queryServiceID($SRVC_TP_NM){
+        $ServiceID=DB::table('Service_Type_Info')
+                    ->where('Service_Type_Info.SRVC_TP_NM','=',$SRVC_TP_NM)
+                    ->select('Service_Type_Info.SRVC_TP_ID as SRVC_TP_ID')
+                    ->get();
+        return response()->json($ServiceID);
+    }       
+
+    public function getPaymethods($CMB_ID){
+        $PayMethod=DB::table('Combo_Info')
+                ->where('Combo_Info.CMB_ID','=',$CMB_ID)
+                ->select('Combo_Info.CMB_PAY_MTHD as CMB_PAY_MTHD')
+                ->get();
+        return response()->json($PayMethod);
+    }
     /**
      * Show the form for creating a new resource.
      *

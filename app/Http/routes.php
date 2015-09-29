@@ -81,4 +81,7 @@ Route::get('deleteService/{CMB_ID}','ServiceController@deleteService');
 Route::get('getAllHotel','ServiceController@getAllHotel');
 Route::get('getAllTags','ServiceController@getAllTags');
 Route::get('getTags/{CMB_ID}','ServiceController@getTags');
+Route::get('getAllPaymentMethods','ServiceController@getAllPaymentMethods');
+Route::get('queryServiceID/{SRVC_TP_NM}','ServiceController@queryServiceID');
+Route::get('getPaymethods/{CMB_ID}','ServiceController@getPaymethods');
 //Route::get('history','OrderHistoryController');

@@ -45,6 +45,10 @@
                                             <input ng-model="hotelInfo.HTL_PRM_CNTCT_NM"></input>                                
                                         </div>
                                         <div class="input-group input-customized">
+                                            <label>第二联系人</label>
+                                            <input ng-model="hotelInfo.HTL_SCD_CNTCT_NM"></input>                                
+                                        </div>                                        
+                                        <div class="input-group input-customized">
                                             <label>城市</label>
                                             <input ng-model="hotelInfo.HTL_CT"></input>   
                                         </div>
@@ -52,7 +56,10 @@
                                             <label>房间数</label>
                                             <input ng-model="hotelInfo.HTL_NM_OF_RM"></input>                                   
                                         </div>                                                               
-                                  
+                                       <div class="input-group input-customized">
+                                            <label>旅馆地理编号</label>
+                                            <input ng-model="hotelInfo.HTL_GEO_ID"></input>                                    
+                                        </div>                                        
                                 </div>
                                 <div class="modal-right">                        
                                         <!-- 酒店表格 --> 
@@ -65,10 +72,22 @@
                                             <label>联系电话</label>
                                             <input ng-model="hotelInfo.HTL_PRM_CNTCT_PHN"></input>                                    
                                         </div>
+                                       <div class="input-group input-customized">
+                                            <label>第二联系电话</label>
+                                            <input ng-model="hotelInfo.HTL_SCD_CNTCT_PHN"></input>                                    
+                                        </div>                                        
                                         <div class="input-group input-customized">
                                             <label>地址</label>
                                             <input ng-model="hotelInfo.HTL_ADDRSS"></input>    
-                                        </div>                                                                                                 
+                                        </div>  
+                                       <div class="input-group input-customized">
+                                            <label>公司编号</label>
+                                            <input ng-model="hotelInfo.CRP_ID"></input>                                    
+                                        </div> 
+                                       <div class="input-group input-customized">
+                                            <label>酒店合同编号</label>
+                                            <input ng-model="hotelInfo.HTL_CNTRCT_ID"></input>                                    
+                                        </div>                                                                                                                                                                              
                                 </div>  
                             </form> 
                         </div>

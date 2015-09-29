@@ -287,6 +287,27 @@ app.factory('serviceFactory',function($http){
                 headers:{'content-Type':'application/json'},
                 url:'getTags/'+CMB_ID.toString()
             })
-        }                               
+        }
+        ,getAllPaymentMethods: function(){
+            return $http({
+                method:'GET',
+                headers:{'content-Type':'application/json'},
+                url:'getAllPaymentMethods'
+            })
+        }
+        ,queryServiceID: function(SRVC_TP_NM){
+             return $http({
+                method:'GET',
+                headers:{'content-Type':'application/json'},
+                url:'queryServiceID/'+SRVC_TP_NM
+             })
+        } 
+        ,getPaymethods: function(CMB_ID){
+            return $http({
+                method:'GET',
+                headers:{'content-Type':'application/json'},
+                url:'getPaymethods/'+CMB_ID.toString()
+            })
+        }                              
     };
 });

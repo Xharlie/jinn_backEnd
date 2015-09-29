@@ -52,7 +52,12 @@ app.controller('hotelCTRL', function($scope,hotelFactory) {
             HTL_ADDRSS:hotelInfo.HTL_ADDRSS, 
             HTL_NM_OF_RM:hotelInfo.HTL_NM_OF_RM,           
             HTL_STATUS:'正常',
-            HTL_INPT_TSTMP:now            
+            HTL_INPT_TSTMP:now,
+            HTL_GEO_ID:hotelInfo.HTL_GEO_ID,
+            CRP_ID:hotelInfo.CRP_ID,
+            HTL_CNTRCT_ID:hotelInfo.HTL_CNTRCT_ID,
+            HTL_SCD_CNTCT_NM:hotelInfo.HTL_SCD_CNTCT_NM,
+            HTL_SCD_CNTCT_PHN:hotelInfo.HTL_SCD_CNTCT_PHN
         } 
 
         hotelFactory.postHotelInfo(hotel).success(function(data){

@@ -59,10 +59,29 @@
                                         ng-options="area.name as area.name for area in areacategories"></select>   
                                     </div>
                                     <div class="input-group input-customized">
+                                        <label>原价</label>
+                                        <input ng-model="serviceInfo.CMB_ORGN_PRC"></input>                                   
+                                    </div>                                     
+                                    <div class="input-group input-customized">
                                         <label>单价</label>
                                         <input ng-model="serviceInfo.CMB_PRC"></input>                                   
-                                    </div>                                                               
-                              
+                                    </div>
+                                    <div class="input-group input-customized">
+                                        <label>转移价格</label>
+                                        <input ng-model="serviceInfo.CMB_TRANS_PRC"></input>                                   
+                                    </div>    
+                                    <div class="input-group input-customized">
+                                        <label>提供方式</label>
+                                        <input ng-model="serviceInfo.CMB_PRVD_MTHD"></input>                                                                                               
+                                    </div> 
+                                    <div class="input-group input-customized">
+                                        <label>介绍</label>
+                                        <input ng-model="serviceInfo.CMB_DSCRPT"></input>
+                                    </div>                                    
+                                   <div class="input-group input-customized">
+                                        <label>细节介绍</label>
+                                        <input ng-model="serviceInfo.CMB_DTL"></input>
+                                    </div>                                                                 
                             </div>
                             <div class="modal-right">                        
                                     <!-- 服务表格 --> 
@@ -70,7 +89,8 @@
                                         <label>服务类型</label>
 
                                        <select ng-model="merchantInfo.MRCHNT_TP"
-                                                ng-options="serviceType.SRVC_TP_NM as serviceType.SRVC_TP_NM for serviceType in serviceTypes "/>
+                                                ng-options="serviceType.SRVC_TP_NM as serviceType.SRVC_TP_NM for serviceType in serviceTypes "
+                                                ng-blur="queryServiceID()"/>
                                     </div>
                                     <div class="input-group input-customized">
                                         <label>联系电话</label>
@@ -81,21 +101,40 @@
                                         <select ng-model="serviceInfo.CMB_MTHD"
                                         ng-options="service.option as service.option for service in servicecategories">                                         
                                         </select>    
-                                    </div> 
-                                    <div ng-repeat= "tag in allTags">                                
-                                    <td> <input type="checkbox" id={{tag.TAG_ID}} ng-checked="isSelected(tag.TAG_ID)" ng-click="updateSelection($event,tag.TAG_ID)"/>{{tag.TAG_NM}} 
-                                    </td>  
-                                    </div>                                                           
+                                    </div>
+                                    <div class="input-group input-customized">
+                                        <label>链接</label>
+                                        <input ng-model="serviceInfo.CMB_LNK"></input>
+                                    </div>                                    
+                                    <label>标签</label>   
+                                        <div ng-repeat= "tag in allTags">
+                                            <td> <input type="checkbox" id={{tag.TAG_ID}} ng-checked="isSelected(tag.TAG_ID)" ng-click="updateSelection($event,tag.TAG_ID)"/>{{tag.TAG_NM}} 
+                                            </td>  
+                                        </div> 
+                                    <label>标签</label>   
+                                        <div ng-repeat= "method in allPaymentMethods">
+                                            <td> <input type="checkbox" id={{method.PAY_MTHD_ID}} ng-checked="isSelectedPayment(method.PAY_MTHD_ID)" ng-click="updateSelectionPayment($event,method.PAY_MTHD_ID)"/>{{method.PAY_MTHD_NM}} 
+                                            </td>  
+                                        </div>                                                          
                             </div>
-                        </form> 
+                        </form>
+
                          <div>
                             <form name="myForm" action="fileupload" class="dropzone" id="my-dropzone" method="post" class = "form single-dropzone" enctype="multipart/form-data">
                               <br>
                               <input type="hidden" name="_token" value="{{ csrf_token() }}">
                               <button id="upload-submit" class="btn btn-default margin-t-5" ><i class="fa fa-upload" ></i> 上传图片</button>                                                                                                    
-                            </form> 
-
+                            </form>
                         </div>   
+
+                         <div>
+                            <form name="myForm" action="fileupload" class="dropzone" id="thumb-dropzone" method="post" class = "form single-dropzone" enctype="multipart/form-data">
+                              <br>
+                              <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                              <button id="uploadthumb" class="btn btn-default margin-t-5" ><i class="fa fa-upload" ></i> 上传小图片</button>                                                                                                    
+                            </form> 
+                        </div> 
+
                         </form>
                             <div class="input-group input-customized">
                                 <label>备注</label>
@@ -106,7 +145,7 @@
                                                                        
                     </div>
                     <div class="modal-footer">
-                      <button type="button" class="btn btn-customized" ng-click="submit(serviceInfo,merchantInfo,selected)">添加</button>                             
+                      <button type="button" class="btn btn-customized" ng-click="submit(serviceInfo,merchantInfo,selected,selectedPayment)">添加</button>                             
                       <button type="button" class="btn btn-customized" data-dismiss="modal">关闭</button>
                     </div>
                   </div>
